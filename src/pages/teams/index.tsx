@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { GetServerSideProps, NextPage } from 'next'
 import Image from 'next/image';
 import Link from 'next/link';
@@ -211,7 +212,7 @@ const TeamsPage: NextPage<Props> = ({ teams, items }) => {
 
 
 
-export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
 
   const session = await getSession({ req });
   const headers = req.headers;
@@ -227,8 +228,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
   const { data } = await localApi.get<ITeam[]>('http://localhost:3000/api/team', {
     headers: { Cookie: headers.cookie! },
   });
-
-  console.log(data);
 
   const res = await pokeApi.get<ItemListResponse>('/item');
 
