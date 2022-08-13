@@ -9,19 +9,21 @@ import { toast } from 'react-toastify';
 import { Layout } from '@/components/layout/Layout'
 import { Modal } from '@/components/ui/Modal';
 
-import { localApi } from '@/api';
+import { localApi, pokeApi } from '@/api';
+import { ItemListResponse, SmallItem } from '@/interfaces';
 import { ITeam } from '@/models'
 import { capitalize } from '@/utilites';
 
 interface Props {
   teams: ITeam[];
+  items: SmallItem[];
 }
 
-const TeamsPage: NextPage<Props> = ({ teams }) => {
+const TeamsPage: NextPage<Props> = ({ teams, items }) => {
   const [openModal, setOpenModal] = useState(false)
   const [allTeams, setAllTeams] = useState<ITeam[]>(teams);
   const nameRef = useRef<HTMLInputElement>(null)
-  console.log(allTeams[2].pokemons.length);
+  console.log(items);
   const onSubmit = async (ev: React.MouseEvent<HTMLButtonElement>) => {
     ev.preventDefault();
     const nameTeam = nameRef.current?.value;
@@ -112,6 +114,11 @@ const TeamsPage: NextPage<Props> = ({ teams }) => {
           }
         </div>
       </div>
+      {/* <Modal title='Agregar item' showModal={openModal} onSubmit={onSubmit} onShowModal={onShowModal}>
+        <div className='flex items-center justify-center'>
+          <input type="text" name="equipo" placeholder='Nombre del Equipo' ref={nameRef} />
+        </div>
+      </Modal> */}
       <Modal title='Agregar Equipo' showModal={openModal} onSubmit={onSubmit} onShowModal={onShowModal}>
         <div className='flex items-center justify-center'>
           <input type="text" name="equipo" placeholder='Nombre del Equipo' ref={nameRef} />
@@ -143,11 +150,18 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
     headers: { Cookie: headers.cookie! },
   });
 
+  const res = await pokeApi.get<ItemListResponse>('/item');
 
+  const items: SmallItem[] = res.data.results.map((item, i) => ({
+    ...item,
+    id: i + 1,
+    img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.name}.png`
+  }))
 
   return {
     props: {
-      teams: data
+      teams: data,
+      items
     }
   }
 }
