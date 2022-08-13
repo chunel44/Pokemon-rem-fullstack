@@ -19,4 +19,4 @@ pass: 123456
 
 - [x] Agregar Pokemons a un equipo
 
-- [ ] Agregar un item a un pokemon.
+- [x] Agregar un item a un pokemon.

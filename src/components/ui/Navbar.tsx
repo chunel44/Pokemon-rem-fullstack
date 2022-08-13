@@ -22,11 +22,13 @@ export const Navbar = () => {
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-900">
       <div className="container flex flex-wrap justify-between items-center mx-auto">
-        <div onClick={() => { router.push('/') }} className="flex items-center">
+        <div onClick={() => { router.push('/') }} className="flex items-center cursor-pointer">
           {
             isLoggedIn
-            &&
-            <img src={newUser?.imgUrl} alt={newUser?.name} className='max-w-none w-14 h-14 rounded-full align-middle' />
+              &&
+              newUser?.imgUrl
+              ? <img src={newUser.imgUrl} alt={newUser?.name} className='max-w-none w-14 h-14 rounded-full align-middle' />
+              : <img src='https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper-thumbnail.png' alt={newUser?.name} className='max-w-none w-14 h-14 rounded-full align-middle' />
           }
           <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white ml-4">{isLoggedIn ? newUser?.name : 'Username'}</span>
         </div>

@@ -62,7 +62,7 @@ async function createPokemonByTeam(req: NextApiRequest, res: NextApiResponse<Dat
   const pokemons = data.pokemons as SmallPokemon[];
   const { _id }: { _id: string } = session.user as any;
   await db.connect();
-  const team = await Team.findOne({ userId: _id, name: teamName }).select('_id');
+  const team = await Team.findOne({ userId: _id, name: teamName }).populate('pokemons').select('_id pokemons');
   if (!team) {
     return res.status(404).json({ message: 'Equipo no encontrado' });
   }
@@ -74,7 +74,9 @@ async function createPokemonByTeam(req: NextApiRequest, res: NextApiResponse<Dat
     item: '',
     team: teamId,
   }))
-  const poke = await Pokemon.insertMany(newPokemons);
+  const poke: IPokemon[] = await Pokemon.insertMany(newPokemons);
+  team.pokemons = [...team.pokemons, ...poke];
+  await team.save()
   await db.disconnect();
   return res.json(poke)
 }
